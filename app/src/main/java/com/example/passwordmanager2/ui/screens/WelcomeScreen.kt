@@ -1,12 +1,12 @@
 package com.example.passwordmanager2.ui.screens
 
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -14,7 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.Image
+import androidx.navigation.NavController
 import com.example.passwordmanager2.R
 
 @Composable
@@ -25,95 +25,119 @@ fun WelcomeScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF1E1E1E))
+            .background(Color(0xFFF2F1E9))
     ) {
 
-        Card(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(8.dp)
-                .align(Alignment.Center),
+                .padding(horizontal = 28.dp),
 
-            colors = CardDefaults.cardColors(
-                containerColor = Color(0xFFF2F1E9)
-            ),
-
-            shape = RoundedCornerShape(0.dp)
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Column(
+            Spacer(
+                modifier = Modifier.height(140.dp)
+            )
+
+            Image(
+                painter = painterResource(
+                    id = R.drawable.ic_shield
+                ),
+
+                contentDescription = null,
+
+                modifier = Modifier.size(240.dp)
+            )
+
+            Spacer(
+                modifier = Modifier.height(28.dp)
+            )
+
+            Text(
+                text = "Password manager",
+
+                fontSize = 38.sp,
+
+                fontWeight = FontWeight.Bold,
+
+                color = Color(0xFF3D3D3D)
+            )
+
+            Spacer(
+                modifier = Modifier.height(10.dp)
+            )
+
+            Text(
+                text = "Храните пароли в безопасности",
+
+                fontSize = 18.sp,
+
+                color = Color.Gray
+            )
+
+            Spacer(
+                modifier = Modifier.weight(1f)
+            )
+
+            Button(
+
+                onClick = {
+                    navController?.navigate(
+                        "register"
+                    )
+                },
+
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 48.dp),
+                    .height(62.dp),
 
-                horizontalAlignment = Alignment.CenterHorizontally
+                shape = RoundedCornerShape(18.dp),
+
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF7C90AA)
+                )
             ) {
-                Spacer(modifier = Modifier.height(150.dp))
-                Image(
-                    painter = painterResource(id = R.drawable.ic_shield),
-                    contentDescription = null,
-                    modifier = Modifier.size(220.dp)
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
 
                 Text(
-                    text = "Password manager",
-                    fontSize = 36.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF4A4A4A)
+                    text = "Регистрация",
+                    fontSize = 20.sp
                 )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Text(
-                    text = "Храните пароли в безопасности",
-                    fontSize = 16.sp,
-                    color = Color.Gray
-                )
-
-                Spacer(modifier = Modifier.height(150.dp))
-
-                Button(
-                    onClick = {
-                        navController?.navigate("register")
-                    },
-
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
-
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF73839A)
-                    )
-                ) {
-
-                    Text(
-                        text = "Регистрация"
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Button(
-                    onClick = {
-                        navController?.navigate("login")
-                    },
-
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
-
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.LightGray
-                    )
-                ) {
-
-                    Text(
-                        text = "Войти"
-                    )
-                }
             }
+
+            Spacer(
+                modifier = Modifier.height(16.dp)
+            )
+
+            Button(
+
+                onClick = {
+                    navController?.navigate(
+                        "login"
+                    )
+                },
+
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(62.dp),
+
+                shape = RoundedCornerShape(18.dp),
+
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFD5D5D5)
+                )
+            ) {
+
+                Text(
+                    text = "Войти",
+                    fontSize = 20.sp,
+                    color = Color.White
+                )
+            }
+
+            Spacer(
+                modifier = Modifier.height(40.dp)
+            )
         }
     }
 }

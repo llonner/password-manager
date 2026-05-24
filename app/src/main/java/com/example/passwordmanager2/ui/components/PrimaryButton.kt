@@ -1,7 +1,7 @@
 package com.example.passwordmanager2.ui.components
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -10,31 +10,40 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun PrimaryButton(
+
     text: String,
-    enabled: Boolean,
-    onClick: () -> Unit
+
+    enabled: Boolean = true,
+
+    onClick: () -> Unit,
+
+    modifier: Modifier = Modifier
 ) {
 
     Button(
+
         onClick = onClick,
 
         enabled = enabled,
 
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .height(56.dp),
+            .height(62.dp),
 
-        shape = RoundedCornerShape(14.dp),
+        shape = RoundedCornerShape(18.dp),
 
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF73839A),
-            disabledContainerColor = Color.LightGray
+            containerColor = Color(0xFF7C90AA)
         )
     ) {
 
-        Text(text)
+        Text(
+            text = text,
+            fontSize = 18.sp
+        )
     }
 }

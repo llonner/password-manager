@@ -4,27 +4,38 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.passwordmanager2.R
+import com.example.passwordmanager2.data.local.DatabaseProvider
+import com.example.passwordmanager2.data.local.entity.UserEntity
 import com.example.passwordmanager2.ui.components.AuthTabs
-import com.example.passwordmanager2.ui.components.AuthTextField
 import com.example.passwordmanager2.ui.components.PrimaryButton
+import com.example.passwordmanager2.utils.PhoneVisualTransformation
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
-fun RegisterScreen(navController: NavController? = null) {
+fun RegisterScreen(
+    navController: NavController? = null
+) {
+
+    val context = LocalContext.current
 
     var firstName by remember {
         mutableStateOf("")
@@ -38,121 +49,288 @@ fun RegisterScreen(navController: NavController? = null) {
         mutableStateOf("")
     }
 
+    var errorMessage by remember {
+        mutableStateOf("")
+    }
+
     var isRegisterSelected by remember {
         mutableStateOf(true)
     }
 
     val isFormValid =
+
         firstName.isNotBlank() &&
                 lastName.isNotBlank() &&
-                phone.isNotBlank()
+                phone.length == 10
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF1E1E1E))
+            .background(Color(0xFFF2F1E9))
     ) {
 
-        Card(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(12.dp),
+                .padding(horizontal = 8.dp)
+                .verticalScroll(
+                    rememberScrollState()
+                ),
 
-            colors = CardDefaults.cardColors(
-                containerColor = Color(0xFFF2F1E9)
-            )
+            horizontalAlignment =
+                Alignment.CenterHorizontally
         ) {
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(20.dp)
-                    .verticalScroll(rememberScrollState()),
+            Spacer(
+                modifier = Modifier.height(50.dp)
+            )
 
-                horizontalAlignment = Alignment.CenterHorizontally
+            Image(
+                painter = painterResource(
+                    id = R.drawable.ic_lock
+                ),
+
+                contentDescription = null,
+
+                modifier = Modifier.size(110.dp)
+            )
+
+            Spacer(
+                modifier = Modifier.height(16.dp)
+            )
+
+            Text(
+                text =
+                    "Зарегистрируйтесь\nили войдите в аккаунт",
+
+                fontSize = 32.sp,
+
+                fontWeight = FontWeight.Bold,
+
+                lineHeight = 38.sp,
+
+                color = Color(0xFF3F3F3F)
+            )
+
+            Spacer(
+                modifier = Modifier.height(5.dp)
+            )
+
+            Card(
+
+                modifier = Modifier.fillMaxWidth(),
+
+                colors = CardDefaults.cardColors(
+                    containerColor =
+                        Color(0xFFF2F1E9)
+                ),
+
+                shape = MaterialTheme.shapes.large
             ) {
 
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Image(
-                    painter = painterResource(id = R.drawable.ic_lock),
-                    contentDescription = null,
-                    modifier = Modifier.size(100.dp)
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                Text(
-                    text = "Зарегистрируетесь\nили войдите в аккаунт",
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF4A4A4A)
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Card(
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFFF2F1E9)
-                    )
+                Column(
+                    modifier = Modifier.padding(16.dp)
                 ) {
 
-                    Column(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
+                    AuthTabs(
 
-                        AuthTabs(
-                            isRegisterSelected = isRegisterSelected,
-                            onRegisterClick = {
-                                isRegisterSelected = true
-                            },
-                            onLoginClick = {
-                                navController?.navigate("login")
+                        isRegisterSelected =
+                            isRegisterSelected,
+
+                        onRegisterClick = {
+                            isRegisterSelected = true
+                        },
+
+                        onLoginClick = {
+                            navController?.navigate(
+                                "login"
+                            )
+                        }
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(20.dp)
+                    )
+
+                    OutlinedTextField(
+
+                        value = firstName,
+
+                        onValueChange = {
+                            firstName = it
+                        },
+
+                        label = {
+                            Text("Имя")
+                        },
+
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(64.dp),
+
+                        singleLine = true,
+
+                        shape =
+                            MaterialTheme.shapes.medium
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(16.dp)
+                    )
+
+                    OutlinedTextField(
+
+                        value = lastName,
+
+                        onValueChange = {
+                            lastName = it
+                        },
+
+                        label = {
+                            Text("Фамилия")
+                        },
+
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(64.dp),
+
+                        singleLine = true,
+
+                        shape =
+                            MaterialTheme.shapes.medium
+
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(16.dp)
+                    )
+
+                    OutlinedTextField(
+
+                        value = phone,
+
+                        onValueChange = {
+
+                            val digits =
+                                it.filter { char ->
+                                    char.isDigit()
+                                }
+
+                            if (digits.length <= 10) {
+
+                                phone = digits
                             }
-                        )
+                        },
 
-                        Spacer(modifier = Modifier.height(20.dp))
+                        label = {
+                            Text("Номер телефона")
+                        },
 
-                        AuthTextField(
-                            value = firstName,
-                            label = "Имя",
-                            onValueChange = {
-                                firstName = it
-                            }
-                        )
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(64.dp),
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        singleLine = true,
 
-                        AuthTextField(
-                            value = lastName,
-                            label = "Фамилия",
-                            onValueChange = {
-                                lastName = it
-                            }
-                        )
+                        shape =
+                            MaterialTheme.shapes.medium,
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        visualTransformation =
+                            PhoneVisualTransformation(),
 
-                        AuthTextField(
-                            value = phone,
-                            label = "Номер телефона",
-                            onValueChange = {
-                                phone = it
-                            }
-                        )
-                    }
+                        keyboardOptions =
+                            KeyboardOptions(
+                                keyboardType =
+                                    KeyboardType.Number
+                            )
+                    )
                 }
+            }
 
-                Spacer(modifier = Modifier.weight(1f))
+            Spacer(
+                modifier = Modifier.height(180.dp)
+            )
 
-                PrimaryButton(
-                    text = "Запросить код",
-                    enabled = isFormValid,
-                    onClick = {
-                        navController?.navigate("verification")
+            PrimaryButton(
+
+                text = "Запросить код",
+
+                enabled = isFormValid,
+
+                onClick = {
+
+                    val database =
+                        DatabaseProvider
+                            .getDatabase(context)
+
+                    CoroutineScope(
+                        Dispatchers.IO
+                    ).launch {
+
+                        val existingUser =
+                            database
+                                .userDao()
+                                .getUserByPhone(phone)
+
+                        withContext(
+                            Dispatchers.Main
+                        ) {
+
+                            if (existingUser != null) {
+
+                                errorMessage =
+                                    "Аккаунт уже существует"
+
+                            } else {
+
+                                CoroutineScope(
+                                    Dispatchers.IO
+                                ).launch {
+
+                                    database.userDao()
+                                        .insertUser(
+
+                                            UserEntity(
+                                                firstName =
+                                                    firstName,
+
+                                                lastName =
+                                                    lastName,
+
+                                                phone = phone
+                                            )
+                                        )
+                                }
+
+                                navController?.navigate(
+                                    "verification/$phone"
+                                )
+                            }
+                        }
                     }
+                },
+
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .height(62.dp)
+            )
+
+            if (errorMessage.isNotEmpty()) {
+
+                Spacer(
+                    modifier = Modifier.height(14.dp)
+                )
+
+                Text(
+                    text = errorMessage,
+                    color = Color.Red
                 )
             }
+
+            Spacer(
+                modifier = Modifier.height(30.dp)
+            )
         }
     }
 }
